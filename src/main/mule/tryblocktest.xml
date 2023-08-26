@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="03ef44ab-8298-4f3f-af75-091cc260aac2" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="a1cf4a00-6083-4269-a371-ecb8ff18076d" >
+		<http:request-connection host="localhost" port="4562" />
+	</http:request-config>
+	<flow name="tryblocktestFlow" doc:id="d15bb5f5-e949-4b09-b822-12fc9a9d5dab" >
+		<http:listener doc:name="Listener" doc:id="1c5824cc-f764-4653-b205-51e02024b9cb" config-ref="HTTP_Listener_config" path="/test"/>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="d28c41bf-d6f5-4011-828a-c798f7d1080e" />
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="95cf28a2-5cea-4aed-98d7-3504a5af359b" />
+		<try doc:name="Try" doc:id="1ab7de14-8a0d-4b67-b369-8751940f24ff" >
+			<set-payload value="#[payload]" doc:name="Set Payload" doc:id="af776de4-4f37-4796-80d1-b1782f0120d8" />
+			<set-payload value="#[payload]" doc:name="Set Payload" doc:id="c2ed6087-4e1d-47cf-aeb9-f543c1884281" />
+			<set-payload value="#[payload]" doc:name="Set Payload" doc:id="5debb6c5-e7ec-41b9-be5d-4f085f392d43" />
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="fbaca5a6-ece0-4bb0-8bfb-3996edbd8a75" type="ANY">
+					<set-payload value="#[error.description]" doc:name="Set Payload" doc:id="2090e3e8-2bd7-43d8-94fa-e21a4ad4fb0f" />
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="b91b3de4-87cd-4985-8bcc-7f0bb81cf0a8" />
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="de18fd3f-b900-43ba-b5b4-3df57cba7abc" />
+		<try doc:name="Try" doc:id="a7e7ee32-6232-42e0-9468-a7916e8eaf2f" >
+			<http:request method="POST" doc:name="Request" doc:id="f6007ed8-e475-470e-a90d-8b810f5cb99b" config-ref="HTTP_Request_configuration" path="/test" />
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="8680e780-ef60-4135-9a32-a427e0a59a1b" type="ANY">
+					<set-payload value="#[error.description]" doc:name="Set Payload" doc:id="85126557-2895-4529-b71a-a692a06b7aee" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="6b027d15-4651-4224-98e9-1e102c9c9497" />
+		<set-payload value="this is final pallet in main flow" doc:name="Set Payload" doc:id="52b2b339-c78d-491a-9760-5539d7453a9f" />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6d03012f-2949-4ad4-ae82-abea81f434b3" type="ANY">
+				<set-payload value="#[error.description]" doc:name="Set Payload" doc:id="21070452-7e33-4cce-b9c2-d775dc1a1c82" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>
